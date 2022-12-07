@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_manager/pages/Statistics.dart';
 import 'package:money_manager/pages/home.dart';
 import 'package:money_manager/shared/adaptive_theme.dart';
 
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       theme: getAdaptiveThemeData(context),
       routes: {
         '/': (BuildContext context) => const HomePage(),
+        '/stats': (BuildContext context) => const StatsPage(),
       },
       onUnknownRoute: (RouteSettings settings) {
         return MaterialPageRoute(
