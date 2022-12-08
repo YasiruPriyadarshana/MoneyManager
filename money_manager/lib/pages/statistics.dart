@@ -53,7 +53,7 @@ Widget _buildHome() {
       Row(
         children: [
           ElevatedButton(onPressed: () {}, child: const Text('Income')),
-          ElevatedButton(onPressed: () {}, child: const Text('Expence'))
+          ElevatedButton(onPressed: () {}, child: const Text('Expense'))
         ],
       )
     ],
