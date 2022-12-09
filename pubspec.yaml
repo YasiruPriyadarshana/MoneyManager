@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   intl: ^0.17.0
   sqflite: ^2.2.2
+  pie_chart: ^5.3.2
 
 dev_dependencies:
   flutter_test:

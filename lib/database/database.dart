@@ -1,5 +1,6 @@
 import 'package:money_manager/models/expense.dart';
 import 'package:sqflite/sqflite.dart';
+// ignore: depend_on_referenced_packages
 import 'package:path/path.dart';
 
 class CurrencyDatabase {
@@ -13,7 +14,7 @@ class CurrencyDatabase {
         onCreate: (Database db, int version) async {
       // When creating the db, create the table
       await db.execute(
-          'CREATE TABLE expense (id INTEGER PRIMARY KEY, category TEXT, amount DOUBLE, unit TEXT, icon TEXT, date TEXT)');
+          'CREATE TABLE expense (id INTEGER PRIMARY KEY, category TEXT, amount DOUBLE, icon INTEGER, date TEXT)');
     });
     return database;
   }
@@ -52,7 +53,6 @@ class CurrencyDatabase {
       return Expense(
         category: maps[i]['category'],
         amount: maps[i]['amount'],
-        unit: maps[i]['unit'],
         icon: maps[i]['icon'],
         date: maps[i]['date'],
       );

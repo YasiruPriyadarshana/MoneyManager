@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,9 +16,35 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int selectedIndex = -1;
+  int selectedIcon = 0;
   int currentIndex = 0;
+  String unit = '\$';
   final List<bool> _selectedBtn = <bool>[false, true];
   CurrencyDatabase db = CurrencyDatabase();
+
+  final iconList = const <IconData>[
+    Icons.add_reaction,
+    Icons.car_rental,
+    Icons.fastfood,
+    Icons.house,
+    Icons.health_and_safety,
+    Icons.menu_book,
+    Icons.beach_access,
+    Icons.phone_android,
+    // Icons.card_giftcard
+  ];
+
+  List<Color> iconColorList = [
+    Colors.orange,
+    Colors.redAccent,
+    Colors.orange,
+    Colors.lightGreen,
+    Colors.pink,
+    Colors.purple,
+    Colors.green,
+    Colors.blueAccent,
+    // Color.fromARGB(255, 156, 156, 20),
+  ];
 
   void _onItemTapped(index) {
     setState(() {
@@ -66,6 +90,7 @@ class _HomePageState extends State<HomePage> {
       ],
       currentIndex: currentIndex,
       selectedItemColor: Colors.amber[800],
+      backgroundColor: Colors.grey[200],
       onTap: _onItemTapped,
     );
   }
@@ -80,13 +105,13 @@ class _HomePageState extends State<HomePage> {
     return Column(
       children: [
         const Calendar(),
-        const Text('Budget:4000\$'),
+        const Text('Budget:500\$'),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: const LinearProgressIndicator(
-              value: 0.45,
+              value: 0.24,
               minHeight: 18,
             ),
           ),
@@ -109,18 +134,29 @@ class _HomePageState extends State<HomePage> {
                           _deleteExpenseConfirm();
                         },
                         title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Text(snapshot.data?[index].category.toString() ??
-                                'Category'),
-                            Text(snapshot.data?[index].amount.toString() ??
-                                '\$0'),
+                            const SizedBox(
+                              width: 30.0,
+                            ),
+                            Expanded(
+                              flex: 3,
+                              child: Text(
+                                  snapshot.data?[index].category.toString() ??
+                                      'Category'),
+                            ),
+                            Expanded(
+                              flex: 1,
+                              child: Text(
+                                  "\$${snapshot.data?[index].amount.toString()}"),
+                            ),
                           ],
                         ),
-                        leading: const Padding(
-                          padding: EdgeInsets.only(right: 12.0),
-                          child: Icon(Icons.food_bank,
-                              color: Colors.deepOrange, size: 36.0),
+                        leading: Padding(
+                          padding: const EdgeInsets.only(right: 12.0),
+                          child: Icon(iconList[snapshot.data?[index].icon ?? 0],
+                              color: iconColorList[
+                                  snapshot.data?[index].icon ?? 0],
+                              size: 30.0),
                         ),
                       ),
                     );
@@ -177,7 +213,8 @@ class _HomePageState extends State<HomePage> {
               ),
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  padding:
+                      EdgeInsets.only(left: 12.0, right: isIncome ? 0 : 12.0),
                   child: TextFormField(
                     controller: category,
                     validator: (value) {
@@ -194,10 +231,12 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               isIncome
-                  ? const Padding(
-                      padding: EdgeInsets.only(right: 12.0, top: 6.0),
-                      child: Icon(Icons.add_reaction,
-                          color: Colors.deepOrange, size: 30.0),
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 6.0, top: 6.0),
+                      child: IconButton(
+                          onPressed: () => _changeCatogoryIcon(),
+                          icon: Icon(iconList[selectedIcon],
+                              color: iconColorList[selectedIcon], size: 30.0)),
                     )
                   : const SizedBox(),
             ],
@@ -230,7 +269,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ],
           ),
-          const SizedBox(height: 10.0),
+          const SizedBox(height: 5.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -239,29 +278,59 @@ class _HomePageState extends State<HomePage> {
                 child: ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        _createExpense(category.text, double.parse(amount.text),
-                            'add_reaction');
-                        print(amount.text);
+                        _createExpense(
+                            category.text, double.parse(amount.text));
                       }
                     },
-                    child: const Text('Save')),
+                    child: const Text('Save',
+                        style: TextStyle(color: Colors.white))),
               ),
             ],
-          )
+          ),
+          const SizedBox(height: 8.0),
         ],
       ),
     );
   }
 
-  _createExpense(String category, double amount, String icon) async {
+  _changeCatogoryIcon() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          color: Colors.grey[50],
+          child: GridView.builder(
+            primary: false,
+            padding: const EdgeInsets.all(8),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                mainAxisSpacing: 5, crossAxisSpacing: 5, crossAxisCount: 8),
+            itemCount: iconList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return IconButton(
+                  onPressed: () {
+                    selectedIcon = index;
+                    Navigator.pop(context);
+                    setState(() {});
+                  },
+                  icon: Icon(iconList[index],
+                      color: iconColorList[index], size: 24.0));
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  //databse functions
+  _createExpense(String category, double amount) async {
     var currentDate =
         DateFormat('EEE, MMM yyyy').format(DateTime.now()).toString();
 
     Expense expense = Expense(
         category: category,
         amount: amount,
-        unit: 'doller',
-        icon: icon,
+        icon: selectedIcon,
         date: currentDate);
     db.insertExpence(expense);
     setState(() {});
@@ -272,7 +341,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (BuildContext context) {
         return Container(
-          color: Colors.orange,
+          color: Colors.grey[200],
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
@@ -280,18 +349,18 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(Icons.cancel, color: Colors.white),
+                icon: const Icon(Icons.cancel, color: Colors.orange),
               ),
               const SizedBox(
                 height: 35.0,
                 child: VerticalDivider(
-                  color: Colors.white,
+                  color: Colors.black26,
                   thickness: 1,
                 ),
               ),
               IconButton(
                 onPressed: () => _deleteExpense(1),
-                icon: const Icon(Icons.delete, color: Colors.white),
+                icon: const Icon(Icons.delete, color: Colors.redAccent),
               ),
             ],
           ),

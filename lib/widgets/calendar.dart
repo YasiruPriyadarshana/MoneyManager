@@ -33,14 +33,14 @@ class _CalendarState extends State<Calendar> {
           setState(() {
             currentDate = formattedDate;
           });
-        } else {
-          print("Date is not selected");
         }
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(currentDate, style: const TextStyle(letterSpacing: 5.0)),
+          Text(currentDate,
+              style: const TextStyle(
+                  letterSpacing: 5.0, fontWeight: FontWeight.bold)),
           const SizedBox(
             width: 10.0,
           ),
