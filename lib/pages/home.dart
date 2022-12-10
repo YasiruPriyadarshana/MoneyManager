@@ -1,5 +1,9 @@
+import 'dart:developer';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money_manager/models/income.dart';
 
 import '../models/expense.dart';
 import '../widgets/calendar.dart';
@@ -125,6 +129,11 @@ class _HomePageState extends State<HomePage> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     return Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      elevation: 2,
+                      shadowColor: Colors.grey,
                       child: ListTile(
                         selected: index == selectedIndex,
                         onLongPress: () {
@@ -196,7 +205,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildForm(isIncome) {
+  Widget _buildForm(isExpense) {
     final formKey = GlobalKey<FormState>();
     final category = TextEditingController();
     final amount = TextEditingController();
@@ -214,7 +223,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Padding(
                   padding:
-                      EdgeInsets.only(left: 12.0, right: isIncome ? 0 : 12.0),
+                      EdgeInsets.only(left: 12.0, right: isExpense ? 0 : 12.0),
                   child: TextFormField(
                     controller: category,
                     validator: (value) {
@@ -230,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              isIncome
+              isExpense
                   ? Padding(
                       padding: const EdgeInsets.only(right: 6.0, top: 6.0),
                       child: IconButton(
@@ -250,7 +259,7 @@ class _HomePageState extends State<HomePage> {
               Expanded(
                 child: Padding(
                   padding: EdgeInsets.only(
-                      left: 12.0, right: isIncome ? 52.0 : 12.0),
+                      left: 12.0, right: isExpense ? 52.0 : 12.0),
                   child: TextFormField(
                     controller: amount,
                     validator: (value) {
@@ -278,8 +287,8 @@ class _HomePageState extends State<HomePage> {
                 child: ElevatedButton(
                     onPressed: () {
                       if (formKey.currentState!.validate()) {
-                        _createExpense(
-                            category.text, double.parse(amount.text));
+                        _createExpense(category.text, double.parse(amount.text),
+                            !_selectedBtn[0]);
                       }
                     },
                     child: const Text('Save',
@@ -323,16 +332,23 @@ class _HomePageState extends State<HomePage> {
   }
 
   //databse functions
-  _createExpense(String category, double amount) async {
+  _createExpense(String category, double amount, bool isExpense) async {
     var currentDate =
         DateFormat('EEE, MMM yyyy').format(DateTime.now()).toString();
 
-    Expense expense = Expense(
-        category: category,
-        amount: amount,
-        icon: selectedIcon,
-        date: currentDate);
-    db.insertExpence(expense);
+    if (isExpense) {
+      Expense expense = Expense(
+          category: category,
+          amount: amount,
+          icon: selectedIcon,
+          date: currentDate);
+      db.insertExpence(expense);
+    } else {
+      Income income =
+          Income(category: category, amount: amount, date: currentDate);
+      db.insertIncome(income);
+    }
+
     setState(() {});
   }
 
