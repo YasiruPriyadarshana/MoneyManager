@@ -1,16 +1,14 @@
-# money_manager
+# Money Manager
 
-A new Flutter project.
+Money Manger app help use to track your income, expeses and savings with minimal effort.
+Analyze your spendings daily,weekly and monthly with graphical charts.
 
-## Getting Started
+## Screenshots
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+<p align="center">
+  <img src="https://github.com/YasiruPriyadarshana/MoneyManager/blob/main/assets/screenshot/Screenshot.money_manager1.jpg" width="250">
+  <img width="30">
+  <img src="https://github.com/YasiruPriyadarshana/MoneyManager/blob/main/assets/screenshot/Screenshot.money_manager2.jpg" width="250">
+  <img width="30">
+  <img src="https://github.com/YasiruPriyadarshana/MoneyManager/blob/main/assets/screenshot/Screenshot.money_manager3.jpg" width="250">
+</p>
